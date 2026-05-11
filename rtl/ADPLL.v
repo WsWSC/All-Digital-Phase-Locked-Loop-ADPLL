@@ -19,7 +19,7 @@ output OUT_CLK, LOCK;
 
 wire [6:0] DCO_CODE;
 
-// test
+// tb_freq_sweep
 // RESET_INV
 RESET_INV reset_inv(.RESET(RESET), 
         .RESET_(RESET_) );
@@ -42,7 +42,7 @@ DCO dco(.RESET_(RESET_),
 FREQ_DIV freq_div(.RESET(RESET), .CLK_IN(OUT_CLK), .M2(M2), .M1(M1), .M0(M0), 
         .CLK_OUT(OUT_divM) );
 
-// test.v
-// TEST test(REF_CLK, RESET, M, OUT_CLK, LOCK);
+// tb_freq_sweep.v
+// tb_freq_sweep tb_freq_sweep(REF_CLK, RESET, M, OUT_CLK, LOCK);
 
 endmodule
