@@ -1,235 +1,265 @@
-# ADPLL_Project
+# All-Digital Phase-Locked Loop (ADPLL)
 
-**All-Digital Phase-Locked Loop (ADPLL) — Verilog RTL Design**
+This project implements an **All-Digital Phase-Locked Loop (ADPLL)** using Verilog HDL and HSPICE simulation methodology.
 
-This project implements an **All-Digital Phase-Locked Loop (ADPLL)** using Verilog HDL and HSPICE simulation methodology,
-with emphasis on modular digital PLL architecture and verification flow.
+The ADPLL architecture consists of:
 
-The ADPLL is composed of:
-
-- Digitally Controlled Oscillator (DCO)
 - Phase Frequency Detector (PFD)
-- Digital Loop Filter (DLF)
-- Controller
+- Digital Pulse Amplifier (DPA)
+- PLL Controller
+- Digitally Controlled Oscillator (DCO)
 - Frequency Divider
 
-After completing the design, the functionality of the ADPLL was verified through behavioral simulation and AMS simulation.
+The functionality of the ADPLL was verified through:
 
+- Behavioral Simulation
+- AMS Mixed-Mode Simulation
 
----
+<br>
+
 
 # Table of Contents
 
+- [Specifications](#specifications)
+
 - [Repository Layout](#repository-layout)
+
 - [Architecture](#architecture)
-  - [ADPLL Overview](#adpll-overview)
-  - [Building Blocks](#building-blocks)
-- [Implementation Status](#implementation-status)
-  - [Implemented](#implemented)
-  - [Future Improvements](#future-improvements)
+  - [ADPLL Overview](#-adpll-overview)
+  - [Phase Frequency Detector (PFD)](#-phase-frequency-detector-pfd)
+  - [Digital Pulse Amplifier (DPA)](#-digital-pulse-amplifier-dpa)
+  - [PLL Controller](#-pll-controller)
+  - [Digitally Controlled Oscillator (DCO)](#-digitally-controlled-oscillator-dco)
+  - [Frequency Divider](#-frequency-divider)
+
 - [Simulation & Verification](#simulation--verification)
   - [Verification Flow](#verification-flow)
-  - [Simulation Result](#simulation-result)
-- [Reference](#reference)
+
+- [Simulation Result](#simulation-result)
+  - [U18 Process Result](#u18-process-result)
+  - [ADFP 16nm Process Result](#adfp-16nm-process-result)
+
+- [Mixed-Mode Simulation](#mixed-mode-simulation)
+
+- [Tools & Environment](#tools--environment)
+
+<br>
 
 
----
+# Specifications
+
+| Item | Description |
+|---|---|
+| Target Process | UMC 180nm / TSMC ADFP 16nm |
+| Reference Clock | 37.1 MHz ~ 14.94 GHz |
+| Output Clock | 259.4 MHz ~ 14.94 GHz |
+| Divider Ratio | M = 1 ~ 7 |
+| Lock Time | 8 ~ 62 cycles |
+| Verification | Behavioral + AMS Simulation |
+
+<br>
+
 
 # Repository Layout
 
 ```text
 rtl/
- ├─ pfd/                  # Phase Frequency Detector
- ├─ dco/                  # Digitally Controlled Oscillator
- ├─ filter/               # Digital Loop Filter
- ├─ controller/           # FSM / control logic
- ├─ divider/              # Frequency divider
- └─ top/                  # ADPLL top-level integration
+ ├─ ADPLL.v
+ ├─ CONTROLLER.v
+ ├─ DCO.v
+ ├─ FREQ_DIV.v
+ ├─ PFD.v
+ └─ RESET_INV.v
 
 tb/
- └─ tb.v                  # Top-level testbench
+ ├─ tb_top.v
+ ├─ tb_lock.v
+ └─ tb_freq_sweep.v
 
-sim/
- ├─ behavioral/           # Behavioral simulation
- └─ ams/                  # AMS simulation
+spice/
+ ├─ DCO.sp
+ └─ PFD.sp
 
-waveform/
- └─ Simulation waveforms
+scripts/
+ ├─ period_jitter.py
+ └─ cycle_to_cycle_jitter.py
 
 img/
- └─ Architecture diagrams
+ └─ Architecture / waveform images
 ```
 
+<br>
 
----
 
 # Architecture
 
-The ADPLL is implemented as a modular digital PLL architecture,
-with independent functional blocks for frequency tracking and clock synchronization.
+## 🔹 ADPLL Overview
 
-
-## ADPLL Overview
-
-![ADPLL](img/adpll_architecture.png)
+<p align="center">
+  <img src="img/Architecture_ADPLL.png" width="700"/>
+</p>
 
 The ADPLL architecture consists of:
 
-- Phase Frequency Detector (PFD)
-- Controller
-- Digital Loop Filter (DLF)
+- PFD + DPA
+- PLL Controller
 - Digitally Controlled Oscillator (DCO)
 - Frequency Divider
 
-
-### Signal Flow
-
-```text
-Reference Clock
-       │
-       ▼
-+----------------+
-|      PFD       |
-+----------------+
-       │
-       ▼
-+----------------+
-|   Controller   |
-+----------------+
-       │
-       ▼
-+----------------+
-| Digital Filter |
-+----------------+
-       │
-       ▼
-+----------------+
-|      DCO       |
-+----------------+
-       │
-       ▼
-   Output Clock
-       │
-       ▼
-+----------------+
-| Frequency Div. |
-+----------------+
-       │
-       └──────────── Feedback
-```
+<br>
 
 
-## Building Blocks
+## 🔹 Phase Frequency Detector (PFD)
 
+<p align="center">
+  <img src="img/Architecture_PFD.png" width="650"/>
+</p>
 
-### Phase Frequency Detector (PFD)
+The PFD is implemented using a cell-based tri-state Bang-Bang architecture.
 
-The PFD compares:
+It compares:
 
 - Reference clock
 - Feedback clock
 
-and generates phase correction signals.
+and generates `flagU` / `flagD` signals for ADPLL locking behavior.
+
+<br>
 
 
-### Controller
+## 🔹 Digital Pulse Amplifier (DPA)
+
+<p align="center">
+  <img src="img/Architecture_DPA.png" width="650"/>
+</p>
+
+The DPA is implemented using a multi-stage digital delay chain.
+
+It amplifies and aligns pulse signals to improve phase tracking stability.
+
+<br>
+
+
+## 🔹 PLL Controller
+
+<p align="center">
+  <img src="img/Architecture_Controller.png" width="650"/>
+</p>
 
 The controller adjusts the DCO control code according to phase error information.
 
-Features：
+Features:
 
-- FSM-based control
 - Frequency tracking
+- FSM-based control
 - Lock-state control
+- Loop filter assisted convergence
+
+<br>
 
 
-### Digital Loop Filter (DLF)
+## 🔹 Digitally Controlled Oscillator (DCO)
 
-The digital loop filter smooths the control signal to improve locking stability and reduce oscillation.
+<p align="center">
+  <img src="img/Architecture_DCO.png" width="650"/>
+</p>
+
+The DCO generates the output clock according to the digital control code.
+
+The oscillation frequency is adjusted using tri-state buffer based delay stages with binary-weighted control.
+
+Features:
+
+- Digitally controlled frequency tuning
+- Fully digital architecture
+- Binary-weighted delay control
+- Clock generation for ADPLL feedback loop
+
+<br>
 
 
-### Digitally Controlled Oscillator (DCO)
-
-The DCO generates the output clock according to the control code.
-
-
-### Frequency Divider
+## 🔹 Frequency Divider
 
 The divider generates the feedback clock used for PLL synchronization.
 
+A programmable counter-based divider is used for frequency division ratio:
 
----
+```text
+M = 1 ~ 7
+```
 
-# Implementation Status
+<br>
 
-
-## Implemented
-
-- ✔ Modular ADPLL architecture
-- ✔ Phase Frequency Detector (PFD)
-- ✔ Digital Loop Filter (DLF)
-- ✔ FSM-based controller
-- ✔ Digitally Controlled Oscillator (DCO)
-- ✔ Frequency divider
-- ✔ Behavioral simulation
-- ✔ AMS simulation verification
-
-
-## Future Improvements
-
-- Fractional-N PLL support
-- Faster lock-time optimization
-- Improved jitter performance
-- Gate-level simulation
-- Synthesis & APR flow
-
-
----
 
 # Simulation & Verification
-
-The ADPLL functionality is verified through behavioral simulation and AMS simulation.
-
 
 ## Verification Flow
 
 ```text
-Architecture Design
-        ↓
 RTL Design
-        ↓
+    ↓
 Behavioral Simulation
-        ↓
-AMS Simulation
-        ↓
+    ↓
+AMS Mixed-Mode Simulation
+    ↓
 Waveform Verification
+    ↓
+Jitter Measurement
 ```
 
-
-## Simulation Result
-
-The following behaviors were verified：
-
-- Frequency locking
-- Clock synchronization
-- Stable feedback operation
-- Output clock convergence
+<br>
 
 
-### Waveform Analysis
+# Simulation Result
 
-Simulation waveforms were analyzed to verify：
+## U18 Process Result
 
-- PLL lock behavior
-- Frequency convergence
-- Output clock stability
-- Feedback synchronization
+| Item | Result |
+|---|---|
+| Output Frequency | 259.4 MHz ~ 1333.3 MHz |
+| Lock Time | 8 ~ 21 cycles |
+| Period Jitter | 0.562 ns |
+| Cycle-to-Cycle Jitter | 0.582 ns |
+| Avg Power | 3.628 mW |
+
+<br>
 
 
----
+## ADFP 16nm Process Result
 
-# Reference
+| Item | Result |
+|---|---|
+| Output Frequency | 4.514 GHz ~ 14.94 GHz |
+| Lock Time | 21 ~ 62 cycles |
+| Period Jitter | 3.120 ps |
+| Cycle-to-Cycle Jitter | 3.480 ps |
+| Avg Power | 1.119 mW |
 
-[1] ADPLL Architecture Reference  
-[2] Digital PLL Design Methodology  
-[3] Verilog RTL Design  
+<br>
+
+
+# Mixed-Mode Simulation
+
+The Verilog behavioral models:
+
+- `DCO.v`
+- `PFD.v`
+
+were replaced with SPICE-level implementations:
+
+- `DCO.sp`
+- `PFD.sp`
+
+to perform AMS mixed-mode simulation.
+
+<br>
+
+
+# Tools & Environment
+
+- Verilog HDL
+- HSPICE
+- Cadence ADE-L
+- Synopsys VCS
+- Synopsys XA
+- AMS Mixed-Mode Simulation
