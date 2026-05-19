@@ -8,6 +8,7 @@
 `timescale 1ns/1ps
 
 module DCO(RESET_, DCO_CODE_0, DCO_CODE_1, DCO_CODE_2, DCO_CODE_3, DCO_CODE_4, DCO_CODE_5, DCO_CODE_6, DCO_OUT);
+
     input RESET_;   // RESET = 0, DCO is reset, RESET = 1, DCO works
     input DCO_CODE_0, DCO_CODE_1, DCO_CODE_2, DCO_CODE_3, DCO_CODE_4, DCO_CODE_5, DCO_CODE_6;   // DCO control code
     output DCO_OUT;   // DCO output clock
@@ -16,7 +17,10 @@ module DCO(RESET_, DCO_CODE_0, DCO_CODE_1, DCO_CODE_2, DCO_CODE_3, DCO_CODE_4, D
     wire [6:0] DCO_CODE = {DCO_CODE_6, DCO_CODE_5, DCO_CODE_4, DCO_CODE_3, DCO_CODE_2, DCO_CODE_1, DCO_CODE_0};
     real period;
 
-    initial period <= 15.47118;
+    initial begin
+        DCO_OUT <= 1'b0;
+        period <= 15.47118;
+    end
 
     always@(DCO_CODE) begin
         case(DCO_CODE)
@@ -25,31 +29,31 @@ module DCO(RESET_, DCO_CODE_0, DCO_CODE_1, DCO_CODE_2, DCO_CODE_3, DCO_CODE_4, D
             7'd4  : period <= 7.094822;    7'd5  : period <= 6.586445;
             7'd6  : period <= 5.397113;    7'd7  : period <= 4.983758;
             7'd8  : period <= 4.490782;    7'd9  : period <= 4.128419;
-			
+
             7'd10 : period <= 3.913594;    7'd11 : period <= 3.592788;
             7'd12 : period <= 3.368167;    7'd13 : period <= 3.209708;
             7'd14 : period <= 2.645041;    7'd15 : period <= 2.859179;
             7'd16 : period <= 2.496068;    7'd17 : period <= 2.406054;
             7'd18 : period <= 2.270531;    7'd19 : period <= 2.095360;
-			
+
             7'd20 : period <= 1.953664;    7'd21 : period <= 1.839039;
             7'd22 : period <= 1.753034;    7'd23 : period <= 1.661255;
             7'd24 : period <= 1.603448;    7'd25 : period <= 1.516444;
             7'd26 : period <= 1.484819;    7'd27 : period <= 1.457689;
             7'd28 : period <= 1.402513;    7'd29 : period <= 1.377006;
-			
+
             7'd30 : period <= 1.307111;    7'd31 : period <= 1.263722;
             7'd32 : period <= 1.245408;    7'd33 : period <= 1.225850;
             7'd34 : period <= 1.191168;    7'd35 : period <= 1.157014;
             7'd36 : period <= 1.142049;    7'd37 : period <= 1.098859;
             7'd38 : period <= 1.071625;    7'd39 : period <= 1.047230;
-			
+
             7'd40 : period <= 1.035447;    7'd41 : period <= 1.024255;
             7'd42 : period <= 1.016506;    7'd43 : period <= 1.004516;
             7'd44 : period <= 0.9941507;   7'd45 : period <= 0.9732488;
             7'd46 : period <= 0.9537857;   7'd47 : period <= 0.9349234;
             7'd48 : period <= 0.9275408;   7'd49 : period <= 0.9099443;
-			
+
             7'd50 : period <= 0.8944290;   7'd51 : period <= 0.8801194;
             7'd52 : period <= 0.8659096;   7'd53 : period <= 0.8552728;
             7'd54 : period <= 0.8396999;   7'd55 : period <= 0.8278537;
@@ -79,38 +83,36 @@ module DCO(RESET_, DCO_CODE_0, DCO_CODE_1, DCO_CODE_2, DCO_CODE_3, DCO_CODE_4, D
             7'd96 : period <= 0.5591657;   7'd97 : period <= 0.5549120;
             7'd98 : period <= 0.5506985;   7'd99 : period <= 0.5465227;
 			
-			7'd100 : period <= 0.7505607;  7'd101 : period <= 0.7453550;
-			7'd102 : period <= 0.7404937;  7'd103 : period <= 0.7366056;
-			7'd104 : period <= 0.7328589;  7'd105 : period <= 0.7288757;
-			7'd106 : period <= 0.7250997;  7'd107 : period <= 0.7209711;
-			7'd108 : period <= 0.7178205;  7'd109 : period <= 0.7136457;
+            7'd100 : period <= 0.7505607;  7'd101 : period <= 0.7453550;
+            7'd102 : period <= 0.7404937;  7'd103 : period <= 0.7366056;
+            7'd104 : period <= 0.7328589;  7'd105 : period <= 0.7288757;
+            7'd106 : period <= 0.7250997;  7'd107 : period <= 0.7209711;
+            7'd108 : period <= 0.7178205;  7'd109 : period <= 0.7136457;
 
-			7'd110 : period <= 0.7089255;  7'd111 : period <= 0.7056896;
-			7'd112 : period <= 0.7024690;  7'd113 : period <= 0.6996237;
-			7'd114 : period <= 0.6953778;  7'd115 : period <= 0.6921013;
-			7'd116 : period <= 0.6881015;  7'd117 : period <= 0.6857753;
-			7'd118 : period <= 0.6816899;  7'd119 : period <= 0.6797003;
+            7'd110 : period <= 0.7089255;  7'd111 : period <= 0.7056896;
+            7'd112 : period <= 0.7024690;  7'd113 : period <= 0.6996237;
+            7'd114 : period <= 0.6953778;  7'd115 : period <= 0.6921013;
+            7'd116 : period <= 0.6881015;  7'd117 : period <= 0.6857753;
+            7'd118 : period <= 0.6816899;  7'd119 : period <= 0.6797003;
 
-			7'd120 : period <= 0.6756415;  7'd121 : period <= 0.6719861;
-			7'd122 : period <= 0.6689706;  7'd123 : period <= 0.6671913;
-			7'd124 : period <= 0.6644127;  7'd125 : period <= 0.6604556;
-			7'd126 : period <= 0.6586317;  7'd127 : period <= 0.6548645;
+            7'd120 : period <= 0.6756415;  7'd121 : period <= 0.6719861;
+            7'd122 : period <= 0.6689706;  7'd123 : period <= 0.6671913;
+            7'd124 : period <= 0.6644127;  7'd125 : period <= 0.6604556;
+            7'd126 : period <= 0.6586317;  7'd127 : period <= 0.6548645;
 
-		endcase
-	end
+        endcase
+    end
 
-	always@(posedge RESET_) // DCO Work
-	begin : dco_run
-		forever begin : dco_set
-			DCO_OUT = ~DCO_OUT;
-			#(period / 2.0);
-		end
-	end
+    always@(posedge RESET_) begin : dco_run
+        forever begin : dco_set
+            DCO_OUT = ~DCO_OUT;
+            #(period / 2.0);
+        end
+    end
 
-	always@(negedge RESET_) // DCO STOP
-	begin
-		DCO_OUT = 0;
-		disable dco_run; // turn off DCO when RESET_=0;
-	end
+    always@(negedge RESET_) begin
+        DCO_OUT = 1'b0;
+        disable dco_run; // turn off DCO when RESET_=0
+    end
 
 endmodule
