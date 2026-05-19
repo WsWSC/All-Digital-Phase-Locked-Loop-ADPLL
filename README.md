@@ -66,32 +66,32 @@ The functionality of the ADPLL was verified through:
 
 ```text
 rtl/
-  ADPLL.v        Top-level ADPLL integration
-  CONTROLLER.v   Bang-bang PLL controller and lock control
-  DCO.v          Behavioral DCO frequency model
-  FREQ_DIV.v     Programmable feedback divider
-  PFD.v          Phase frequency detector model
-  RESET_INV.v    Reset polarity inverter
+├── ADPLL.v          Top-level ADPLL integration
+├── CONTROLLER.v     Bang-bang PLL controller and lock control
+├── DCO.v            Behavioral DCO frequency model
+├── FREQ_DIV.v       Programmable feedback divider
+├── PFD.v            Phase frequency detector model
+└── RESET_INV.v      Reset polarity inverter
 
 tb/
-  TOP.v           Top-level behavioral simulation wrapper
-  test_MONITOR.v  Divider-ratio monitor testbench
-  tb_freq_sweep.v Frequency sweep testbench
+├── TOP.v            Top-level behavioral simulation wrapper
+├── test_MONITOR.v   Divider-ratio monitor testbench
+└── tb_freq_sweep.v  Frequency sweep testbench
 
 spice/
-  DCO.sp          SPICE-level DCO implementation
-  PFD.sp          SPICE-level PFD implementation
+├── DCO.sp           SPICE-level DCO implementation
+└── PFD.sp           SPICE-level PFD implementation
 
 scripts/
-  Period_Jitter.py   Period jitter post-processing script
-  C-to-C_Jitter.py   Cycle-to-cycle jitter post-processing script
+├── Period_Jitter.py Period jitter post-processing script
+└── C-to-C_Jitter.py Cycle-to-cycle jitter post-processing script
 
 img/
-  Architecture_ADPLL.png
-  Architecture_Controller.png
-  Architecture_DCO.png
-  Architecture_DPA.png
-  Architecture_PFD.png
+├── Architecture_ADPLL.png
+├── Architecture_Controller.png
+├── Architecture_DCO.png
+├── Architecture_DPA.png
+└── Architecture_PFD.png
 ```
 
 <br>
